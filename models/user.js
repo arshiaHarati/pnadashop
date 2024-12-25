@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const {Shema} = mongoose;
 
-const userShema = mongoose.Shema({
+const userShema = mongoose.Schema({
     name :{
         type : String,
         minlength : 3,
@@ -25,14 +25,22 @@ const userShema = mongoose.Shema({
         minlength : 11,
         maxlength : 11,
         required : true,
-        match : [/09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}/]
+        // match : [/09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}/]
     },
     address : {
         type :  String,
         minlength : 3,
         maxLength : 400,
 
+    },
+    password : {
+        type : String,
+        minlength : 5,
+        maxLength : 60,
+        required : true
     }
 
 
 })
+const UserModel = mongoose.model('user',userShema)
+module.exports = UserModel
