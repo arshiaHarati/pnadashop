@@ -1,5 +1,6 @@
 const express = require("express")
 const app = express()
+const userRouter = require('./routes/user')
 require('dotenv').config()
 app.use(express.json())
 
@@ -11,7 +12,6 @@ async function main() {
     await mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`);
     console.log('connected to db...');
 }
-const userRouter = require('./routes/user')
 app.use('/user',userRouter)
 
 

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose")
 const {Shema} = mongoose;
+const bcrypt = require('bcrypt');
+const router = require("../routes/user");
 
 const userShema = mongoose.Schema({
     name :{
@@ -12,20 +14,22 @@ const userShema = mongoose.Schema({
         type : String,
         minlength : 3,
         maxLength : 200,
-        required : true
+        required : true,
+        unique: true
     },
     email : {
         type : String,
         minlength : 3,
         maxlength : 320,
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+        unique: true
     },
     phone : {
         type : String,
         minlength : 11,
         maxlength : 11,
         required : true,
-        // match : [/09(1[0-9]|3[1-9]|2[1-9])-?[0-9]{3}-?[0-9]{4}/]
+        unique: true
     },
     address : {
         type :  String,
@@ -42,5 +46,14 @@ const userShema = mongoose.Schema({
 
 
 })
+
+userShema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);  
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+
 const UserModel = mongoose.model('user',userShema)
 module.exports = UserModel
