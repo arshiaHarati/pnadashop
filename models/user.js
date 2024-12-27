@@ -53,7 +53,7 @@ userShema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
 });
-
+ 
 
 const UserModel = mongoose.model('user',userShema)
 module.exports = UserModel
