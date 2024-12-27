@@ -10,9 +10,23 @@ const bcrypt = require('bcrypt');
     if (!name || !userName || !email || !phone  || !password) {
       return res.status(400).send('All fields are required');
   }
-    try {
+  try {
+    // بررسی وجود داده تکراری
+    const existingUser = await UserModel.findOne({
+        $or: [
+            { email },
+            { phone },
+            { userName }
+        ]
+    });
+
+    if (existingUser) {
+        return res.status(400).send('Email, Phone, or Username already exists');
+    }
+
         const user =  await UserModel.create({name,userName,email,phone,password});
         res.status(201).send({ message: 'User registered successfully' });
+        
     } catch (err) {
       console.log(err);
         return res.status(500).send(err);
@@ -22,7 +36,7 @@ const bcrypt = require('bcrypt');
 
 router.post('/login', async (req, res) => {
   const { identifier, password } = req.body; 
-  console.log(identifier);
+
 
   try {
       
@@ -33,7 +47,7 @@ router.post('/login', async (req, res) => {
               { userName: identifier }
           ]
       });
-      console.log(user);
+
       if (!user) {
           return res.status(404).json({ message: 'User not found' });
       }
