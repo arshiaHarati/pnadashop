@@ -5,7 +5,6 @@ const authMiddleware = require('./middlewares/auth')
 const userRouter = require('./routes/user')
 
 app.use(express.json())
-app.use(authMiddleware)
 
 const mongoose = require('mongoose');
 
